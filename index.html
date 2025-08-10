@@ -8,9 +8,10 @@
     :root{
       --bg:#0f1724;
       --card:#0b1220;
-      --accent:#06b6d4;
+      --accent:#212121;
       --muted:#94a3b8;
       --radius:14px;
+      --white:#ffffff
     }
     html,body{height:100%;}
     body{
@@ -25,16 +26,29 @@
       padding:0;
     }
 
-    header{
+    header {
+    width: 100%;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    padding:10px 20px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      box-sizing:border-box;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+
+    /* header{
       width:100%;
-      background:rgba(6,182,212,0.1);
+      background:'#ffffff';
       padding:10px 20px;
       display:flex;
       align-items:center;
       gap:10px;
       box-sizing:border-box;
       border-bottom:1px solid rgba(255,255,255,0.05);
-    }
+    } */
 
     header img{
       height:32px;
@@ -68,7 +82,7 @@
       box-sizing:border-box;
     }
 
-    h1{font-size:18px;margin:0 0 12px 0;color:var(--accent)}
+    h1{font-size:18px;margin:0 0 12px 0;color:var(--white)}
     p{margin:0 0 18px 0;color:var(--muted);font-size:14px}
 
     .video-wrap{
@@ -149,13 +163,13 @@
 </head>
 <body>
   <header>
-    <img src="codingworkx-logo.png" alt="Codingworkx Logo">
+    <img  src="./new_logo2.png" alt="Codingworkx Logo">
     <h2>Powered by Codingworkx</h2>
   </header>
   <main>
     <div class="card">
-      <h1>Responsive Video Loader</h1>
-      <p>Example single-file HTML that lazily loads a video, shows a custom play button, and degrades gracefully.</p>
+      <h1>The Brave Fox & Loyal Dog in Dinosaur Valley 🦊🐶🦖</h1>
+      <p>In Dinosaur Valley, brave fox Fenix and loyal dog Barkley race to rescue their kidnapped friend Luna. Facing traps, mountains, and mischievous dinos, they rely on courage, loyalty, and teamwork. This heartwarming kids’ adventure shows how friendship can overcome any obstacle in a thrilling, prehistoric world..</p>
 
       <div class="video-wrap" id="videoWrap">
         <video id="player" preload="metadata" playsinline webkit-playsinline controls tabindex="0" poster="poster.jpg">
@@ -172,7 +186,7 @@
       </div>
 
       <div class="controls-row">
-        <div class="meta">Tip: The video is lazy-loaded when it appears in the viewport.</div>
+        <!-- <div class="meta">Tip: The video is lazy-loaded when it appears in the viewport.</div> -->
         <div class="actions">
           <button class="btn" id="muteToggle">Mute</button>
           <button class="btn" id="autoplayToggle">Autoplay: Off</button>
