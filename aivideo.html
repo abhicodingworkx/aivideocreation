@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Responsive Video Loader</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#06b6d4;
+      --muted:#94a3b8;
+      --radius:14px;
+    }
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:linear-gradient(180deg,#071025 0%, #07182a 100%);
+      color: #e6eef6;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      padding:0;
+    }
+
+    header{
+      width:100%;
+      background:rgba(6,182,212,0.1);
+      padding:10px 20px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      box-sizing:border-box;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+    }
+
+    header img{
+      height:32px;
+      width:auto;
+    }
+
+    header h2{
+      font-size:16px;
+      font-weight:500;
+      margin:0;
+      color:var(--accent);
+    }
+
+    main{
+      flex:1;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      padding:24px;
+      box-sizing:border-box;
+    }
+
+    .card{
+      width:100%;
+      max-width:980px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+      border-radius:var(--radius);
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+      padding:18px;
+      box-sizing:border-box;
+    }
+
+    h1{font-size:18px;margin:0 0 12px 0;color:var(--accent)}
+    p{margin:0 0 18px 0;color:var(--muted);font-size:14px}
+
+    .video-wrap{
+      position:relative;
+      width:100%;
+      aspect-ratio:16/9;
+      background: #000;
+      border-radius:10px;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    video{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      background: #000;
+    }
+
+    .overlay{
+      position:absolute;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      pointer-events:none;
+    }
+
+    .play-btn{
+      pointer-events:auto;
+      width:84px;
+      height:84px;
+      border-radius:999px;
+      background:linear-gradient(180deg, rgba(6,182,212,0.95), rgba(6,182,212,0.85));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 8px 30px rgba(6,182,212,0.2);
+      transform:scale(1);
+      transition:transform .18s ease, opacity .18s ease;
+      cursor:pointer;
+    }
+
+    .play-btn:active{transform:scale(.97)}
+    .play-btn svg{width:36px;height:36px;fill:#04202a}
+
+    .controls-row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      margin-top:12px;
+    }
+
+    .meta{font-size:13px;color:var(--muted)}
+    .actions{display:flex;gap:8px}
+
+    .btn{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      padding:6px 10px;
+      border-radius:8px;
+      color:var(--muted);
+      font-size:13px;
+      cursor:pointer;
+    }
+
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    @media (max-width:520px){
+      .play-btn{width:68px;height:68px}
+      .play-btn svg{width:28px;height:28px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="codingworkx-logo.png" alt="Codingworkx Logo">
+    <h2>Powered by Codingworkx</h2>
+  </header>
+  <main>
+    <div class="card">
+      <h1>Responsive Video Loader</h1>
+      <p>Example single-file HTML that lazily loads a video, shows a custom play button, and degrades gracefully.</p>
+
+      <div class="video-wrap" id="videoWrap">
+        <video id="player" preload="metadata" playsinline webkit-playsinline controls tabindex="0" poster="poster.jpg">
+          <source data-src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+          <source data-src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" type="video/webm">
+          Your browser does not support HTML5 video. You can <a href="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">download the video here</a>.
+        </video>
+        <div class="overlay" id="overlay">
+          <button class="play-btn" id="playBtn" aria-label="Play video">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="controls-row">
+        <div class="meta">Tip: The video is lazy-loaded when it appears in the viewport.</div>
+        <div class="actions">
+          <button class="btn" id="muteToggle">Mute</button>
+          <button class="btn" id="autoplayToggle">Autoplay: Off</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function(){
+      const player = document.getElementById('player');
+      const playBtn = document.getElementById('playBtn');
+      const overlay = document.getElementById('overlay');
+      const muteToggle = document.getElementById('muteToggle');
+      const autoplayToggle = document.getElementById('autoplayToggle');
+      let autoplay = false;
+
+      function lazyLoadVideo() {
+        const sources = player.querySelectorAll('source');
+        sources.forEach(s => {
+          if (s.dataset.src && !s.src) s.src = s.dataset.src;
+        });
+        player.load();
+      }
+
+      if ('IntersectionObserver' in window) {
+        const obs = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              lazyLoadVideo();
+              observer.disconnect();
+            }
+          });
+        }, {rootMargin: '200px'});
+        obs.observe(player);
+      } else {
+        lazyLoadVideo();
+      }
+
+      playBtn.addEventListener('click', () => {
+        if (player.paused) {
+          player.play().catch(err => console.warn('play failed', err));
+        } else {
+          player.pause();
+        }
+      });
+
+      player.addEventListener('click', () => {
+        if (player.paused) player.play().catch(()=>{});
+        else player.pause();
+      });
+
+      function updateOverlay(){
+        if (player.paused) {
+          overlay.style.opacity = '1';
+          overlay.style.pointerEvents = 'auto';
+        } else {
+          overlay.style.opacity = '0';
+          overlay.style.pointerEvents = 'none';
+        }
+      }
+
+      player.addEventListener('play', updateOverlay);
+      player.addEventListener('pause', updateOverlay);
+      player.addEventListener('ended', updateOverlay);
+
+      muteToggle.addEventListener('click', () => {
+        player.muted = !player.muted;
+        muteToggle.textContent = player.muted ? 'Unmute' : 'Mute';
+      });
+
+      autoplayToggle.addEventListener('click', async () => {
+        autoplay = !autoplay;
+        autoplayToggle.textContent = 'Autoplay: ' + (autoplay ? 'On' : 'Off');
+        if (autoplay) {
+          try { player.muted = true; await player.play(); } catch(e) { console.warn(e); }
+        } else {
+          player.pause();
+          player.muted = false;
+        }
+      });
+
+      updateOverlay();
+
+      playBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          playBtn.click();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
